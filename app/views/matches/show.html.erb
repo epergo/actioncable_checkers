@@ -1,0 +1,13 @@
+<p id="notice"><%= notice %></p>
+
+<h3>You are <%= @user.username %></h3>
+
+<div id="match"></div>
+
+<canvas id="board" width="300" height="150"></canvas>
+
+<%= link_to 'Back', matches_path %>
+
+<%= javascript_tag do -%>
+  drawBoard(<%= raw @board %>)
+<% end -%>
