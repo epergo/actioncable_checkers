@@ -7,6 +7,7 @@ var BLACK = '1';
 var WHITE = '2';
 
 var you_are = BLACK;
+var your_id;
 var game_board = {};
 var game_board_backup = {};
 var board_w;
@@ -21,9 +22,10 @@ $('#match').ready(function() {
 
 });
 
-function initGame(board, owner) {
+function initGame(board, owner, user_id) {
   game_board = copyArrayByValue(board.status);
   game_board_backup = copyArrayByValue(board.status);
+  your_id = user_id;
 
   if (owner) {
     you_are = WHITE;
@@ -146,7 +148,7 @@ function setBoardSize() {
 }
 
 function canIMove() {
-  if (whomoves() == you_are && !move_done) {
+  if (whomoves() == your_id && !move_done) {
     return true;
   }
 
@@ -158,7 +160,7 @@ function whomoves() {
 }
 
 function resetBoard() {
-  if (whomoves() == you_are) {
+  if (whomoves() == your_id) {
     for (var i = 0; i < 10; i++) {
       for (var j = 0; j < 10; j++) {
         game_board[i][j] = game_board_backup[i][j];

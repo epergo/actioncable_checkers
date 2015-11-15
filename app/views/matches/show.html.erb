@@ -19,5 +19,5 @@
 
 
 <%= javascript_tag do -%>
-  initGame(<%= raw @board %>, <%= @match.owner?(@user.id) %>)
+  initGame(<%= raw @board %>, <%= @match.owner?(@user.id) %>, <%= @user.id %>)
 <% end -%>
