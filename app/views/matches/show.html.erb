@@ -1,23 +1,27 @@
 <p id="notice"><%= notice %></p>
 <%= link_to 'Back', matches_path %>
+<h4>Logged as: <%= @user.username %></h4>
 
-<h3><%= @match.user.username %> VS <%= @match.opponent.try(:username) %></h3>
+<!-- Match info -->
+<span class="match_info" data-matchid="<%= @match.id %>" data-user-creator="<%= @match.user.username %>" data-user-opponent="<%= @match.opponent.try(:username)%>"></span>
 
-<div id="game">
+<h3 id="players"></h3>
+
+<div id="game" data-userid="<%= @user.id %>" data-username="<%= @user.username %>">
   <canvas id="board" width="0" height="0"></canvas>
   <div id="match_information">
-    <span id="turn_of" data-turnid="<%= @match.turn %>">Turn of: <%= @match.turn_of %></span>
+    Turn of: <span id="turn_of" data-turnid="<%= @match.turn %>"><%= @match.turn_of %></span>
     </br>
-    asdf
   </div>
 
   <div id="game_actions">
     <button type="button" class="btn btn-danger" onclick="resetBoard()">Reset</button>
-    <button type="button" class="btn btn-success">Enviar</button>
+    <button type="button" class="btn btn-success" onclick="App.game_room.sendMove()">Send move</button>
   </div>
 </div>
 
+<div id="game_log"></div>
 
 <%= javascript_tag do -%>
-  initGame(<%= raw @board %>, <%= @match.owner?(@user.id) %>)
+  initGame(<%= raw @board %>, <%= @match.owner?(@user.id) %>, <%= @user.id %>)
 <% end -%>

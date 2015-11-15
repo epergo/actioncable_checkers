@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   resources :matches
-  resources :users, only: [:index]
+  resources :users, only: [:index, :create, :destroy]
 
-  root 'users#index'
+  root 'matches#index'
 end

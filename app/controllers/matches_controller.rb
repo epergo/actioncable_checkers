@@ -1,5 +1,4 @@
 class MatchesController < ApplicationController
-  before_action :set_match, only: [:show, :edit, :update, :destroy]
 
   # GET /matches
   # GET /matches.json
@@ -42,6 +41,8 @@ class MatchesController < ApplicationController
     @match = @user.matches.new(match_params)
 
     if @match.save
+      # Send by broadcast the NEW MATCH!!
+      ActionCable.server.broadcast('matches', match: @match, user: @user.username)
       redirect_to @match
     else
       render :new

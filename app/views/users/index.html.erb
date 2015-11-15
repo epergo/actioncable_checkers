@@ -11,7 +11,7 @@
 
   <tbody>
     <% @users.each do |user| %>
-      <p><%= link_to user.username, matches_path(user: user.id) %></p>
+      <p><%= link_to user.username, users_path(user_id: user.id), method: :post %></p>
     <% end %>
   </tbody>
 </table>

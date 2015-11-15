@@ -32,4 +32,12 @@ class Match < ActiveRecord::Base
       opponent.username
     end
   end
+
+  def swap_turns
+    if turn == user.id
+      self.turn = opponent.id
+    else
+      self.turn = user.id
+    end
+  end
 end
