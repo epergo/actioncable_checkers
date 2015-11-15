@@ -8,26 +8,29 @@ var WHITE = '2';
 
 var you_are = BLACK;
 var game_board = {};
+var game_board_backup = {};
 var board_w;
 var board_h;
 var cell_size;
 var selected_color = '#8A0808';
 var selected_piece = [];
 var piece_size;
+var move_done = false;
 
 $('#match').ready(function() {
 
 });
 
 function initGame(board, owner) {
-  game_board = board.status;
+  game_board = copyArrayByValue(board.status);
+  game_board_backup = copyArrayByValue(board.status);
 
   if (owner) {
     you_are = WHITE;
   }
 
   setBoardSize();
-  drawBoard(game_board);
+  drawBoard();
   $('#board').on('click', clickEvents);
 }
 
@@ -44,7 +47,7 @@ function clickEvents(event) {
   if (canIMove() && cell_content != 0) {
     if (cell_content == you_are) {
       // This cleans any previously selected piece
-      drawBoard(game_board);
+      drawBoard();
       // Save selected
       selected_piece = [row, column];
       // Mark piece as selected (red color)
@@ -55,7 +58,10 @@ function clickEvents(event) {
   if (cell_content == 0 && selected_piece.length > 0) {
     if (canMoveThere(selected_piece, [row, column])) {
       // Move done, update board
-      drawBoard(game_board);
+      drawBoard();
+
+      // Flag
+      move_done = true;
     }
   }
 }
@@ -77,15 +83,15 @@ function getDrawPosition(axis) {
   return (axis * cell_size) + cell_size / 2
 }
 
-function drawBoard(board) {
+function drawBoard() {
   var color = '#F5F6CE';
-  for (var r = 0; r < board.length; r++) {
-    var row = board[r];
+  for (var r = 0; r < game_board.length; r++) {
+    var row = game_board[r];
     var color_c = color;
     for (var c = 0; c < row.length; c++) {
       drawCell((r * cell_size) + cell_size / 2, (c * cell_size) + cell_size / 2, color_c, cell_size);
 
-      var cell_content = board[c][r];
+      var cell_content = game_board[c][r];
       var piece_color;
       if (cell_content != EMPTY) {
         if (cell_content == WHITE) {
@@ -140,7 +146,7 @@ function setBoardSize() {
 }
 
 function canIMove() {
-  if (whomoves() == you_are) {
+  if (whomoves() == you_are && !move_done) {
     return true;
   }
 
@@ -149,4 +155,23 @@ function canIMove() {
 
 function whomoves() {
   return $('#turn_of').attr('data-turnid');
+}
+
+function resetBoard() {
+  for (var i = 0; i < 10; i++) {
+    for (var j = 0; j < 10; j++) {
+      game_board[i][j] = game_board_backup[i][j];
+    }
+  }
+
+  move_done = false;
+  drawBoard();
+}
+
+function copyArrayByValue(to_copy) {
+  var result = [];
+  for (var i = 0; i < 10; i++) {
+    result[i] = to_copy[i].slice();
+  }
+  return result;
 }
