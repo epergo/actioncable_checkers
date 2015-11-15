@@ -3,7 +3,7 @@ class GameRoomsChannel < ApplicationCable::Channel
   def follow(data)
     stop_all_streams
     stream_from "#{channel_name(data)}"
-    
+
     # Broadcast new user in game room
     ActionCable.server.broadcast(channel_name(data), what: 'new_user',
                                                      user: data['user'])
@@ -11,12 +11,6 @@ class GameRoomsChannel < ApplicationCable::Channel
 
   def unfollow
     stop_all_streams
-  end
-
-  def user_joined(data)
-    # Broadcast new user in game room
-    ActionCable.server.broadcast(channel_name(data), user: @user.username,
-                                                     what: 'new_user')
   end
 
   def send_move(data)

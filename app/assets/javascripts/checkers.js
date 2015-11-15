@@ -65,16 +65,40 @@ function clickEvents(event) {
 }
 
 function canMoveThere(selected, destination) {
-  var d1 = Math.abs(destination[0] - selected[0]) == 1;
-  var d2 = Math.abs(destination[1] - selected[1]) == 1;
-  if (d1 && d2) {
-    // Make the move
+  // Distnace
+  var d1 = Math.abs(destination[0] - selected[0]);
+  var d2 = Math.abs(destination[1] - selected[1]);
+
+  if (d1 == d2 && d1 == 1) {
+    return normal_move(selected, destination);
+  }
+
+  if (d1 == d2 && d1 == 2) {
+    // Trying to kill, huh?
+    return kill_move(selected, destination);
+  }
+}
+
+function kill_move(selected, destination) {
+  // Intermediate cells
+  var i_row = (destination[0] - selected[0]) / 2 + selected[0];
+  var i_col = (destination[1] - selected[1]) / 2 + selected[1];
+  var content = game_board[i_col][i_row];
+  if (content != 0 && content != you_are) {
+    game_board[i_col][i_row] = EMPTY;
     game_board[destination[1]][destination[0]] = game_board[selected[1]][selected[0]];
-    game_board[selected[1]][selected[0]] = EMPTY;
+
     return true;
   }
 
   return false;
+}
+
+function normal_move(selected, destination) {
+  // Make the move
+  game_board[destination[1]][destination[0]] = game_board[selected[1]][selected[0]];
+  game_board[selected[1]][selected[0]] = EMPTY;
+  return true;
 }
 
 function getDrawPosition(axis) {
@@ -176,8 +200,6 @@ function copyArrayByValue(to_copy) {
   return result;
 }
 
-/* Visual */
-
 function update_players() {
   var p1 = $('.match_info').attr('data-user-creator');
   var p2 = $('.match_info').attr('data-user-opponent');
@@ -210,6 +232,9 @@ $('#game').ready(function() {
         // Update 'VS' text
         update_players();
       } else if (data.what == 'update_data') {
+        // Log it
+        $('#game_log').append('<p>New move received</p>');
+
         game_board = copyArrayByValue(JSON.parse(data.board).status);
         $('#turn_of').html(data.turn_n);
         $('#turn_of').attr('data-turnid', data.turn);
@@ -219,9 +244,6 @@ $('#game').ready(function() {
         // Paint updated game board
         drawBoard();
       }
-    },
-    userIsCurrentUser: function(data) {
-      return data === $('#game').attr('data-userid');
     },
     sendMove: function() {
       if (whomoves() == your_id && move_done) {
