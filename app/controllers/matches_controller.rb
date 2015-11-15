@@ -42,6 +42,8 @@ class MatchesController < ApplicationController
     @match = @user.matches.new(match_params)
 
     if @match.save
+      # Send by broadcast the NEW MATCH!!
+      ActionCable.server.broadcast('matches', match: @match, user: @user.username)
       redirect_to @match
     else
       render :new
