@@ -12,6 +12,8 @@ class MatchesController < ApplicationController
     end
 
     @matches = Match.all
+
+    @your_matches = Match.where("user_id = :user_id or  ", @user.id)
   end
 
   # GET /matches/1
@@ -20,7 +22,8 @@ class MatchesController < ApplicationController
     @user = User.find(cookies.signed[:user])
     @match = Match.find(params[:id])
     @board = JSON.parse(@match.board).to_json
-    puts @board
+    
+    @match.update_attribute(:opponent, @user) unless @user.matches.include?(@match)
   end
 
   # GET /matches/new
@@ -35,7 +38,8 @@ class MatchesController < ApplicationController
   # POST /matches
   # POST /matches.json
   def create
-    @match = Match.new(match_params)
+    @user = User.find(cookies.signed[:user])
+    @match = @user.matches.new(match_params)
 
     if @match.save
       redirect_to @match
