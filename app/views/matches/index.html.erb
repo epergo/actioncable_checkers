@@ -23,4 +23,4 @@
 <br>
 
 <%= link_to 'New Match', matches_path, method: :post, class: "btn btn-primary" %>
-<%= link_to 'Select another player', users_path, class: "btn btn-default" %>
+<%= link_to 'Select another player', user_path(@user.id), class: "btn btn-default", method: :delete %>
