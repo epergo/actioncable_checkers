@@ -3,9 +3,14 @@
 
 <h3><%= @match.user.username %> VS <%= @match.opponent.try(:username) %></h3>
 
-<div id="match"></div>
-
-<canvas id="board" width="300" height="150"></canvas>
+<div id="game">
+  <canvas id="board" width="0" height="0"></canvas>
+  <div id="match_information">
+    <span id="turn_of" data-turnid="<%= @match.turn %>">Turn of: <%= @match.turn_of %></span>
+    </br>
+    asdf
+  </div>
+</div>
 
 
 <%= javascript_tag do -%>

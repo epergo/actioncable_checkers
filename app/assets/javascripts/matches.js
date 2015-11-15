@@ -1,9 +1,15 @@
+"use strict";
+
 // Match creator will always be 'white'
-// white --> '2'
-// black --> '1'
+
+var EMPTY = '0';
+var BLACK = '1';
+var WHITE = '2';
+
+var you_are = BLACK;
 var game_board = {};
-var you_are = '1';
 var board_w;
+var board_h;
 var cell_size;
 var selected_color = '#8A0808';
 var selected_piece = [];
@@ -17,7 +23,7 @@ function initGame(board, owner) {
   game_board = board.status;
 
   if (owner) {
-    you_are = '2';
+    you_are = WHITE;
   }
 
   setBoardSize();
@@ -35,9 +41,9 @@ function clickEvents(event) {
   var column = Math.floor(y / cell_size);
 
   var cell_content = game_board[column][row];
-  if (cell_content != 0) {
+  if (canIMove() && cell_content != 0) {
     if (cell_content == you_are) {
-      // This cleans any previously select piece
+      // This cleans any previously selected piece
       drawBoard(game_board);
       // Save selected
       selected_piece = [row, column];
@@ -60,7 +66,7 @@ function canMoveThere(selected, destination) {
   if (d1 && d2) {
     // Make the move
     game_board[destination[1]][destination[0]] = game_board[selected[1]][selected[0]];
-    game_board[selected[1]][selected[0]] = '0';
+    game_board[selected[1]][selected[0]] = EMPTY;
     return true;
   }
 
@@ -81,8 +87,8 @@ function drawBoard(board) {
 
       var cell_content = board[c][r];
       var piece_color;
-      if (cell_content != '0') {
-        if (cell_content == '2') {
+      if (cell_content != EMPTY) {
+        if (cell_content == WHITE) {
           piece_color = '#FAFAFA';
         } else {
           piece_color = '#3B240B';
@@ -131,4 +137,16 @@ function setBoardSize() {
   board_h = h;
   cell_size = board_w / 10;
   piece_size = cell_size - cell_size / 3;
+}
+
+function canIMove() {
+  if (whomoves() == you_are) {
+    return true;
+  }
+
+  return false;
+}
+
+function whomoves() {
+  return $('#turn_of').attr('data-turnid');
 }
