@@ -18,10 +18,6 @@ var selected_piece = [];
 var piece_size;
 var move_done = false;
 
-$('#match').ready(function() {
-
-});
-
 function initGame(board, owner, user_id) {
   game_board = copyArrayByValue(board.status);
   game_board_backup = copyArrayByValue(board.status);
@@ -86,7 +82,7 @@ function getDrawPosition(axis) {
 }
 
 function drawBoard() {
-  var color = '#F5F6CE';
+  var color = '#F6E3CE';
   for (var r = 0; r < game_board.length; r++) {
     var row = game_board[r];
     var color_c = color;
@@ -99,7 +95,7 @@ function drawBoard() {
         if (cell_content == WHITE) {
           piece_color = '#FAFAFA';
         } else {
-          piece_color = '#3B240B';
+          piece_color = '#6E6E6E';
         }
         drawPiece(getDrawPosition(r), getDrawPosition(c), piece_size, piece_color);
       }
@@ -127,10 +123,10 @@ function drawPiece(x, y, size, color) {
 }
 
 function swapColor(color) {
-  if (color == '#F5F6CE') {
-    color = 'black'
+  if (color == '#F6E3CE') {
+    color = '#3B240B'
   } else {
-    color = '#F5F6CE'
+    color = '#F6E3CE'
   }
   return color;
 }
@@ -179,3 +175,61 @@ function copyArrayByValue(to_copy) {
   }
   return result;
 }
+
+/* Visual */
+
+function update_players() {
+  var p1 = $('.match_info').attr('data-user-creator');
+  var p2 = $('.match_info').attr('data-user-opponent');
+  $('#players').html(p1 + ' VS ' + p2);
+}
+
+/* ===== ACTION CABLE ===== */
+
+$('#game').ready(function() {
+  // Fill VS
+  update_players();
+
+  // Subscribe to game room channel
+  App.game_room = App.cable.subscriptions.create('GameRoomsChannel', {
+    game_room_id: $('.match_info').attr('data-matchid'),
+    connected: function() {
+      this.perform('follow', {
+        game_room_id: this.game_room_id,
+        user: $('#game').attr('data-username')
+      });
+    },
+    received: function(data) {
+      if (data.what == 'new_user') {
+        // Log it
+        $('#game_log').append('<p>A user has joined --> ' + data.user + '</p>');
+
+        if ($('.match_info').attr('data-user-opponent') == "" && data.user != $('.match_info').attr('data-user-creator')) {
+          $('.match_info').attr('data-user-opponent', data.user);
+        }
+        // Update 'VS' text
+        update_players();
+      } else if (data.what == 'update_data') {
+        game_board = copyArrayByValue(JSON.parse(data.board).status);
+        $('#turn_of').html(data.turn_n);
+        $('#turn_of').attr('data-turnid', data.turn);
+
+        move_done = false;
+
+        // Paint updated game board
+        drawBoard();
+      }
+    },
+    userIsCurrentUser: function(data) {
+      return data === $('#game').attr('data-userid');
+    },
+    sendMove: function() {
+      if (whomoves() == your_id && move_done) {
+        this.perform('send_move', {
+          game_board: game_board,
+          game_room_id: this.game_room_id
+        });
+      }
+    }
+  });
+});
