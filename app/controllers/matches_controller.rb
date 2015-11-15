@@ -11,9 +11,9 @@ class MatchesController < ApplicationController
       cookies.signed[:user] = @user.id
     end
 
-    @matches = Match.all
+    @matches = Match.all.includes(:user)
 
-    @your_matches = Match.where("user_id = :user_id or  ", @user.id)
+    @your_matches = Match.where('user_id = :user_id or  ', @user.id)
   end
 
   # GET /matches/1

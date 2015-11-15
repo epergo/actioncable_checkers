@@ -158,14 +158,16 @@ function whomoves() {
 }
 
 function resetBoard() {
-  for (var i = 0; i < 10; i++) {
-    for (var j = 0; j < 10; j++) {
-      game_board[i][j] = game_board_backup[i][j];
+  if (whomoves() == you_are) {
+    for (var i = 0; i < 10; i++) {
+      for (var j = 0; j < 10; j++) {
+        game_board[i][j] = game_board_backup[i][j];
+      }
     }
-  }
 
-  move_done = false;
-  drawBoard();
+    move_done = false;
+    drawBoard();
+  }
 }
 
 function copyArrayByValue(to_copy) {

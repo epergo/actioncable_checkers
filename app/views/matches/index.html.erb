@@ -13,8 +13,8 @@
   <tbody>
     <% @matches.each do |match| %>
       <tr>
-        <td><%= match.created_at %></td>
-        <td><%= link_to 'Show', match %></td>
+        <td><%= link_to 'Play this match', match, class: "btn btn-success" %></td>
+        <td>Room created by: <%= match.user.username %></td>
       </tr>
     <% end %>
   </tbody>
