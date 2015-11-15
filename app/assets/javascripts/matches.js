@@ -1,9 +1,12 @@
 // Match creator will always be 'white'
+// white --> '2'
+// black --> '1'
 var game_board = {};
 var you_are = '1';
 var board_w;
 var cell_size;
 var selected_color = '#8A0808';
+var selected_piece = [];
 var piece_size;
 
 $('#match').ready(function() {
@@ -34,10 +37,34 @@ function clickEvents(event) {
   var cell_content = game_board[column][row];
   if (cell_content != 0) {
     if (cell_content == you_are) {
+      // This cleans any previously select piece
       drawBoard(game_board);
+      // Save selected
+      selected_piece = [row, column];
+      // Mark piece as selected (red color)
       drawPiece(getDrawPosition(row), getDrawPosition(column), piece_size, selected_color);
     }
   }
+
+  if (cell_content == 0 && selected_piece.length > 0) {
+    if (canMoveThere(selected_piece, [row, column])) {
+      // Move done, update board
+      drawBoard(game_board);
+    }
+  }
+}
+
+function canMoveThere(selected, destination) {
+  var d1 = Math.abs(destination[0] - selected[0]) == 1;
+  var d2 = Math.abs(destination[1] - selected[1]) == 1;
+  if (d1 && d2) {
+    // Make the move
+    game_board[destination[1]][destination[0]] = game_board[selected[1]][selected[0]];
+    game_board[selected[1]][selected[0]] = '0';
+    return true;
+  }
+
+  return false;
 }
 
 function getDrawPosition(axis) {
