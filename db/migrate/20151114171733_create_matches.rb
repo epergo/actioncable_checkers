@@ -4,7 +4,7 @@ class CreateMatches < ActiveRecord::Migration
       t.belongs_to :user
       t.integer :opponent_id
       t.text :board
-      t.string :turn
+      t.integer :turn
 
       t.timestamps null: false
     end

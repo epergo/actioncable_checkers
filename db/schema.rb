@@ -17,7 +17,7 @@ ActiveRecord::Schema.define(version: 20151114171733) do
     t.integer  "user_id"
     t.integer  "opponent_id"
     t.text     "board"
-    t.string   "turn"
+    t.integer  "turn"
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
   end
