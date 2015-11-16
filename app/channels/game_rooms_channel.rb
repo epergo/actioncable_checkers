@@ -1,12 +1,12 @@
 # app/channels/game_rooms_channel.rb
 class GameRoomsChannel < ApplicationCable::Channel
-  def follow(data)
+  def subscribed
     stop_all_streams
-    stream_from "#{channel_name(data)}"
+    stream_from "game_room_#{params[:room]}"
 
     # Broadcast new user in game room
-    ActionCable.server.broadcast(channel_name(data), what: 'new_user',
-                                                     user: data['user'])
+    ActionCable.server.broadcast("game_room_#{params[:room]}", what: 'new_user',
+                                                               user: params['user'])
   end
 
   def unfollow
@@ -21,10 +21,10 @@ class GameRoomsChannel < ApplicationCable::Channel
     match.swap_turns
     match.save
 
-    ActionCable.server.broadcast(channel_name(data), what: 'update_data',
-                                                     turn: match.turn,
-                                                     turn_n: match.turn_of,
-                                                     board: match.board)
+    ActionCable.server.broadcast("game_room_#{params[:room]}", what: 'update_data',
+                                                               turn: match.turn,
+                                                               turn_n: match.turn_of,
+                                                               board: match.board)
   end
 
   private
