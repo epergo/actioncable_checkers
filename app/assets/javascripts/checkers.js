@@ -87,6 +87,7 @@ function kill_move(selected, destination) {
   if (content != 0 && content != you_are) {
     game_board[i_col][i_row] = EMPTY;
     game_board[destination[1]][destination[0]] = game_board[selected[1]][selected[0]];
+    game_board[selected[1]][selected[0]] = EMPTY;
 
     return true;
   }
@@ -252,7 +253,7 @@ $('#game').ready(function() {
           game_room_id: this.game_room_id
         });
 
-        game_board_backup = game_board;
+        game_board_backup = copyArrayByValue(game_board);
       }
     }
   });
