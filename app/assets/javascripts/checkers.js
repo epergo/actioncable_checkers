@@ -211,15 +211,14 @@ function update_players() {
 $('#game').ready(function() {
   // Fill VS
   update_players();
+  var g_room_id = $('.match_info').attr('data-matchid');
+  var username = $('#game').attr('data-username');
 
   // Subscribe to game room channel
-  App.game_room = App.cable.subscriptions.create('GameRoomsChannel', {
-    game_room_id: $('.match_info').attr('data-matchid'),
+  App.game_room = App.cable.subscriptions.create({ channel: 'GameRoomsChannel', room: g_room_id, user: username }, {
+    game_room_id: g_room_id,
     connected: function() {
-      this.perform('follow', {
-        game_room_id: this.game_room_id,
-        user: $('#game').attr('data-username')
-      });
+
     },
     received: function(data) {
       if (data.what == 'new_user') {
@@ -236,6 +235,7 @@ $('#game').ready(function() {
         $('#game_log').append('<p>New move received</p>');
 
         game_board = copyArrayByValue(JSON.parse(data.board).status);
+        game_board_backup = copyArrayByValue(JSON.parse(data.board).status);
         $('#turn_of').html(data.turn_n);
         $('#turn_of').attr('data-turnid', data.turn);
 
@@ -251,6 +251,8 @@ $('#game').ready(function() {
           game_board: game_board,
           game_room_id: this.game_room_id
         });
+
+        game_board_backup = game_board;
       }
     }
   });
