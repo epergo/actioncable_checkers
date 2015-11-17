@@ -1,28 +1,17 @@
 == README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Checkers (or Draughts) online game created in Ruby on Rails + ActionCable.
 
-Things you may want to cover:
+* Setup database
+rake db:setup
 
-* Ruby version
+* Init ActionCable server
+./bin/cable
 
-* System dependencies
+* Init redis-server
+redis-server
 
-* Configuration
+* Init rails
+rails s
 
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
-
-
-Please feel free to use a different markup language if you do not plan to run
-<tt>rake doc:app</tt>.
+Access localhost:3000 with 2 diferent browsers (or at least with separated cookie space) and select a diferent username with each one.
