@@ -1,8 +1,7 @@
 source 'https://rubygems.org'
 
-gem 'rails', '4.2.4'
+gem 'rails', '5.0.0beta2'
 gem 'sqlite3'
-gem 'actioncable', github: 'rails/actioncable'
 
 gem 'sass-rails'
 gem 'bootstrap-sass'
@@ -14,6 +13,7 @@ gem 'jbuilder'
 gem 'puma'
 gem 'thin'
 gem 'sdoc'
+gem 'redis'
 
 group :development do
   gem 'web-console', '~> 2.0'

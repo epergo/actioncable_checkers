@@ -5,9 +5,6 @@ Checkers (or Draughts) online game created in Ruby on Rails + ActionCable.
 * Setup database
 rake db:setup
 
-* Init ActionCable server
-./bin/cable
-
 * Init redis-server
 redis-server
 
